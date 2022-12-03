@@ -1,10 +1,15 @@
 defmodule AdventOfCodeEx.Boundary.AdventOfCodeManager do
   alias AdventOfCodeEx.Core.Days
 
+  @spec run(1..25, 1 | 2, true | false) :: :ok
   def run(day, part, use_example \\ false) do
-    import_file(day, use_example)
-    |> run_day_part({day, part})
+    run_code({day, part}, use_example)
     |> handle_result({day, part})
+  end
+
+  def run_code({day, _} = day_part, use_example) do
+    import_file(day, use_example)
+    |> run_day_part(day_part)
   end
 
   def run_day_part(txt_input, day_part) do
