@@ -4,7 +4,7 @@ defmodule AdventOfCodeEx.Boundary.AdventOfCodeManager do
   def run(day, part, use_example \\ false) do
     import_file(day, use_example)
     |> run_day_part({day, part})
-    |> print_result()
+    |> handle_result({day, part})
   end
 
   def run_day_part(txt_input, day_part) do
@@ -63,8 +63,12 @@ defmodule AdventOfCodeEx.Boundary.AdventOfCodeManager do
     end
   end
 
-  def print_result({_, answer}) do
-    IO.puts(answer)
+  def handle_result(:unimplemented, {day, part}) do
+    IO.puts("D#{day}p#{part} is unimplemented")
+  end
+
+  def handle_result(answer, {day, part}) do
+    IO.puts("D#{day}p#{part} answer: #{answer}")
   end
 
   defp import_file(day, use_example) do

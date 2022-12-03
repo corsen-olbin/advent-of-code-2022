@@ -1,16 +1,13 @@
 defmodule AdventOfCodeEx.Core.Days.Day2 do
-  import AdventOfCodeEx.Core.Helpers.Messages
 
   def part_1(input) do
     input
     |> find_score_from_rps
-    |> answer(2, 1)
   end
 
   def part_2(input) do
     input
     |> find_score_from_part_2_rules
-    |> answer(2, 2)
   end
 
   # part 1

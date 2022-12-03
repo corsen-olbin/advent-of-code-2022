@@ -1,16 +1,13 @@
 defmodule AdventOfCodeEx.Core.Days.Day1 do
-  alias AdventOfCodeEx.Core.Helpers.Messages
 
   def part_1(input) do
     input
     |> find_greatest_sum_of_calories()
-    |> Messages.answer(1, 1)
   end
 
   def part_2(input) do
     input
     |> find_sum_of_3_greatest_sums_of_calories()
-    |> Messages.answer(1, 2)
   end
 
   def find_greatest_sum_of_calories(input) do
