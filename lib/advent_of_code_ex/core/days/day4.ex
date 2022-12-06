@@ -2,17 +2,17 @@ defmodule AdventOfCodeEx.Core.Days.Day4 do
   def part_1(input) do
     input
     |> String.split("\r\n")
-    |> Enum.count(fn x -> do_pairs_overlap?(x, &is_either_pair_fit_in_other?/1) end)
+    |> Enum.count(fn x -> check_overlap_function(x, &is_either_pair_fit_in_other?/1) end)
   end
 
   def part_2(input) do
     input
     |> String.split("\r\n")
-    |> Enum.count(fn x -> do_pairs_overlap?(x, &do_pairs_overlap_at_all?/1) end)
+    |> Enum.count(fn x -> check_overlap_function(x, &do_pairs_overlap_at_all?/1) end)
   end
 
   # part 1
-  def do_pairs_overlap?(string, over_lap_check?) do
+  def check_overlap_function(string, over_lap_check?) do
     Regex.named_captures(~r/(?<r1>[0-9]+)-(?<r2>[0-9]+),(?<s1>[0-9]+)-(?<s2>[0-9]+)/, string)
     |> over_lap_check?.()
   end
