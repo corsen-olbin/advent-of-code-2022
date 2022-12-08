@@ -29,7 +29,7 @@ defmodule AdventOfCodeEx.Core.Days.Day7 do
          ) do
       %{"command" => "cd", "folder_name" => folder_name} -> {:cd, folder_name}
       %{"command" => "ls"} -> {:ls, Enum.map(response_lines, &interpret_response_line/1)}
-      _ -> raise "you forgot a command #{input}"
+      _ -> raise "you forgot a command"
     end
   end
 
