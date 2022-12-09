@@ -1,7 +1,7 @@
 defmodule AdventOfCodeEx.Core.Days.Day7 do
   def part_1(input) do
     input
-    # split on $ with separates out all the commands w/ their responses
+    # split on $ separates out all the commands w/ their responses
     |> String.split("$ ", trim: true)
     |> Enum.map(&interpret_instruction/1)
     |> build_directory
@@ -11,7 +11,7 @@ defmodule AdventOfCodeEx.Core.Days.Day7 do
 
   def part_2(input) do
     input
-    # split on $ with separates out all the commands w/ their responses
+    # split on $ separates out all the commands w/ their responses
     |> String.split("$ ", trim: true)
     |> Enum.map(&interpret_instruction/1)
     |> build_directory
