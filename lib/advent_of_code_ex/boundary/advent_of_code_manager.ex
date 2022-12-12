@@ -73,7 +73,7 @@ defmodule AdventOfCodeEx.Boundary.AdventOfCodeManager do
   end
 
   def handle_result(answer, {day, part}) do
-    IO.puts("D#{day}p#{part} answer: #{answer}")
+    IO.puts("D#{day}p#{part} answer: #{inspect(answer)}")
   end
 
   defp import_file(day, use_example) do
