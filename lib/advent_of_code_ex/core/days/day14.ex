@@ -6,13 +6,15 @@ defmodule AdventOfCodeEx.Core.Days.Day14 do
     |> String.split("\r\n")
     |> Enum.map(fn str -> String.split(str, " -> ") end)
     |> convert_inputs(%{}, 0)
-    |> IO.inspect()
-
-    :unimplemented
+    |> drop_sand_grains(0)
   end
 
-  def part_2(_input) do
-    :unimplemented
+  def part_2(input) do
+    input
+    |> String.split("\r\n")
+    |> Enum.map(fn str -> String.split(str, " -> ") end)
+    |> convert_inputs(%{}, 0)
+    |> drop_sand_grains_part2(0)
   end
 
   def convert_inputs([], acc, max_y), do: { acc, max_y }
@@ -32,6 +34,42 @@ defmodule AdventOfCodeEx.Core.Days.Day14 do
   def add_line_to_map(map, {x1, y1}, {x2, y2}) do
     for x <- x1..x2, y <- y1..y2, reduce: map do
       {acc, max_y} -> { Map2D.put(acc, x, y, "#"), max(max_y, max(y1, y2)) }
+    end
+  end
+
+  def drop_sand_grains({wall_map, max_y}, sand_count) do
+    case drop_sand_grain(wall_map, {500, 0}, max_y) do
+      :done -> sand_count
+      new_map when is_map(new_map) -> drop_sand_grains({new_map, max_y}, sand_count + 1)
+    end
+  end
+
+  def drop_sand_grain(wall_map, {i, j} = _sand_coords, max_y) do
+    cond do
+      j + 1 > max_y -> :done
+      Map2D.get(wall_map, i, j + 1) == nil -> drop_sand_grain(wall_map, {i, j + 1}, max_y)
+      Map2D.get(wall_map, i - 1, j + 1) == nil -> drop_sand_grain(wall_map, {i - 1, j + 1}, max_y)
+      Map2D.get(wall_map, i + 1, j + 1) == nil -> drop_sand_grain(wall_map, {i + 1, j + 1}, max_y)
+      true -> Map2D.put(wall_map, i, j, "o")
+    end
+  end
+
+  # part 2
+  def drop_sand_grains_part2({wall_map, max_y}, sand_count) do
+    case drop_sand_grain_part2(wall_map, {500, 0}, max_y) do
+      :done -> sand_count
+      new_map when is_map(new_map) -> drop_sand_grains_part2({new_map, max_y}, sand_count + 1)
+    end
+  end
+
+  def drop_sand_grain_part2(wall_map, {i, j} = _sand_coords, max_y) do
+    cond do
+      j + 1 == max_y + 2 -> Map2D.put(wall_map, i, j, "o")
+      Map2D.get(wall_map, i, j + 1) == nil -> drop_sand_grain_part2(wall_map, {i, j + 1}, max_y)
+      Map2D.get(wall_map, i - 1, j + 1) == nil -> drop_sand_grain_part2(wall_map, {i - 1, j + 1}, max_y)
+      Map2D.get(wall_map, i + 1, j + 1) == nil -> drop_sand_grain_part2(wall_map, {i + 1, j + 1}, max_y)
+      Map2D.get(wall_map, 500, 0) == "o" -> :done
+      true -> Map2D.put(wall_map, i, j, "o")
     end
   end
 end
