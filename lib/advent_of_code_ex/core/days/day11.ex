@@ -14,7 +14,7 @@ defmodule AdventOfCodeEx.Core.Days.Day11 do
     input
     |> convert_input
     |> IO.inspect()
-    |> simulate_monkeys(1000, false)
+    |> simulate_monkeys(10000, false)
     |> Enum.map(fn mon -> mon.inspect_num end)
     |> Enum.sort(:desc)
     |> Enum.take(2)
@@ -62,42 +62,46 @@ defmodule AdventOfCodeEx.Core.Days.Day11 do
     }
   end
 
-  def simulate_monkeys(monkeys, turns, worry?), do: simulate_monkeys_rec(0, monkeys, turns, worry?)
+  def simulate_monkeys(monkeys, turns, worry?) do
+    reduction = monkeys |> Enum.map(fn mon -> mon.test end) |> Enum.reduce(fn x, acc -> x * acc end)
 
-  def simulate_monkeys_rec(_, monkeys, 0, _worry?), do: monkeys
+    simulate_monkeys_rec(0, monkeys, turns, worry?, reduction)
+  end
 
-  def simulate_monkeys_rec(index, all_monkeys, turns, worry?) do
+  def simulate_monkeys_rec(_, monkeys, 0, _worry?, _reduction), do: monkeys
+
+  def simulate_monkeys_rec(index, all_monkeys, turns, worry?, reduction) do
     case Enum.at(all_monkeys, index) do
       nil ->
         # IO.inspect(turns, label: "turns")
-        simulate_monkeys_rec(0, all_monkeys, turns - 1, worry?)
+        simulate_monkeys_rec(0, all_monkeys, turns - 1, worry?, reduction)
 
       current ->
-        new_monkeys = simulate_monkey(current, all_monkeys, worry?)
-        simulate_monkeys_rec(index + 1, new_monkeys, turns, worry?)
+        new_monkeys = simulate_monkey(current, all_monkeys, worry?, reduction)
+        simulate_monkeys_rec(index + 1, new_monkeys, turns, worry?, reduction)
     end
   end
 
-  def simulate_monkey(current, all_monkeys, worry?) do
-    inspect_items(current, current.items, all_monkeys, worry?)
+  def simulate_monkey(current, all_monkeys, worry?, reduction) do
+    inspect_items(current, current.items, all_monkeys, worry?, reduction)
   end
 
-  def inspect_items(monkey, [], all_monkeys, _) do
+  def inspect_items(monkey, [], all_monkeys, _, _) do
     List.update_at(all_monkeys, monkey.num, fn mon -> Map.put(mon, :items, []) end)
   end
 
-  def inspect_items(monkey, [item | items], all_monkeys, worry?) do
-    new_monkeys = inspect_item(monkey, item, all_monkeys, worry?)
+  def inspect_items(monkey, [item | items], all_monkeys, worry?, reduction) do
+    new_monkeys = inspect_item(monkey, item, all_monkeys, worry?, reduction)
 
-    inspect_items(monkey, items, new_monkeys, worry?)
+    inspect_items(monkey, items, new_monkeys, worry?, reduction)
   end
 
-  def inspect_item(monkey, item, all_monkeys, worry?) do
+  def inspect_item(monkey, item, all_monkeys, worry?, reduction) do
     new_item = operation(monkey.operation, item)
     bored_item = if worry? do
       div(new_item, 3)
     else
-      if new_item < 1000, do: new_item, else: div(new_item, 100) + rem(new_item, 100)
+      while_greater_than(new_item, reduction)
     end
 
     new_monkeys =
@@ -127,6 +131,13 @@ defmodule AdventOfCodeEx.Core.Days.Day11 do
     case operation["operator"] do
       "*" -> left * right
       "+" -> left + right
+    end
+  end
+
+  def while_greater_than(num, greater_than) do
+    cond do
+      num > greater_than -> while_greater_than(num - greater_than, greater_than)
+      true -> num
     end
   end
 end
